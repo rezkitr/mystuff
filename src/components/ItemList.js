@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import ItemCard from "./ItemCard";
 
 const ItemList = () => {
-    const stuffs = useSelector((state) => state.stuff);
+    const stuffs = useSelector((state) => state.stuff.data);
 
     if (!stuffs.length) {
         return (

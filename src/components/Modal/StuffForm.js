@@ -9,7 +9,7 @@ import { add } from "../../redux/slices/stuffSlice";
 import { closeModal } from "../../redux/slices/modalSlice";
 
 const StuffForm = () => {
-    const stuffs = useSelector((state) => state.stuff);
+    const stuffs = useSelector((state) => state.stuff.data);
     const dispatch = useDispatch();
 
     const schema = yup.object({

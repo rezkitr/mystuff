@@ -1,10 +1,17 @@
 import { priceFormat } from "../utils/utils";
 import { useDispatch } from "react-redux";
 import Button from "./Button";
-import { remove } from "../redux/slices/stuffSlice";
+import { showModal } from "../redux/slices/modalSlice";
+import { setSelected } from "../redux/slices/stuffSlice";
+import { MODAL_ID } from "../utils/enum";
 
 const ItemCard = ({ item }) => {
     const dispatch = useDispatch();
+
+    const onDelete = () => {
+        dispatch(setSelected(item));
+        dispatch(showModal(MODAL_ID.DELETE_CONFIRM));
+    };
 
     return (
         <div className="flex items-center justify-between px-6 py-4 bg-gray-100 rounded-md">
@@ -26,7 +33,7 @@ const ItemCard = ({ item }) => {
                 <Button
                     icon={<i className="fa fa-trash" aria-hidden="true"></i>}
                     type="danger"
-                    onClick={() => dispatch(remove(item.id))}
+                    onClick={onDelete}
                 />
             </div>
         </div>

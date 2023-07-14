@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import { ItemList, PageHeader, StuffForm } from "./components";
+import { DeleteConfirm, ItemList, PageHeader, StuffForm } from "./components";
 import { MODAL_ID } from "./utils/enum";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,6 +12,7 @@ const App = () => {
             <PageHeader />
             <ItemList />
             {modalId === MODAL_ID.ADD_FORM && <StuffForm />}
+            {modalId === MODAL_ID.DELETE_CONFIRM && <DeleteConfirm />}
             <ToastContainer />
         </div>
     );
