@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { v4 as uuidV4 } from "uuid";
-import { toast } from "react-toastify";
 import { add, setSelected, update } from "../../redux/slices/stuffSlice";
 import { closeModal } from "../../redux/slices/modalSlice";
 import Layout from "./Layout";
