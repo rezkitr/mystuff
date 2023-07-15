@@ -13,7 +13,7 @@ const App = () => {
             <ItemList />
             {modalId === MODAL_ID.FORM && <StuffForm />}
             {modalId === MODAL_ID.DELETE_CONFIRM && <DeleteConfirm />}
-            <ToastContainer />
+            <ToastContainer autoClose={2000} />
         </div>
     );
 };

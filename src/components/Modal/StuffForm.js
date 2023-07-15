@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { add, setSelected, update } from "../../redux/slices/stuffSlice";
 import { closeModal } from "../../redux/slices/modalSlice";
 import Layout from "./Layout";
+import { showToast } from "../../utils/utils";
 
 const StuffForm = () => {
     const stuffs = useSelector((state) => state.stuff.data);
@@ -71,7 +72,24 @@ const StuffForm = () => {
             (stuff) => stuff.name.toLowerCase() === name.toLocaleLowerCase()
         );
 
-        return isNameExist;
+        if (!isNameExist) {
+            return false;
+        } else {
+            showToast.nameExist();
+            return true;
+        }
+    };
+
+    const onAdd = (payload) => {
+        dispatch(add(payload));
+        showToast.addSuccess();
+        closeForm();
+    };
+
+    const onUpdate = (payload) => {
+        dispatch(update(payload));
+        showToast.updateSuccess();
+        closeForm();
     };
 
     const onSubmit = async () => {
@@ -81,43 +99,32 @@ const StuffForm = () => {
 
         if (isValid) {
             const formValues = getValues();
+
             if (!selectedStuff) {
+                const payload = {
+                    ...formValues,
+                    id: uuidV4(),
+                    image: URL.createObjectURL(formValues.image[0]),
+                };
                 const isNameExist = checkNameExist(formValues.name);
-                if (!isNameExist) {
-                    dispatch(
-                        add({
-                            ...formValues,
-                            id: uuidV4(),
-                            image: URL.createObjectURL(formValues.image[0]),
-                        })
-                    );
-                    toast("Stuff added successfully", {
-                        autoClose: 2000,
-                        type: "success",
-                    });
-                } else {
-                    toast("Product name already exist", {
-                        autoClose: 2000,
-                        type: "warning",
-                    });
-                }
+                if (!isNameExist) onAdd(payload);
             } else {
-                dispatch(
-                    update({
-                        ...formValues,
-                        id: selectedStuff.id,
-                        image:
-                            formValues.image !== ""
-                                ? URL.createObjectURL(formValues.image[0])
-                                : selectedStuff.image,
-                    })
-                );
-                toast("Stuff updated successfully", {
-                    autoClose: 2000,
-                    type: "success",
-                });
+                const payload = {
+                    ...formValues,
+                    id: selectedStuff.id,
+                    image:
+                        formValues.image !== ""
+                            ? URL.createObjectURL(formValues.image[0])
+                            : selectedStuff.image,
+                };
+
+                if (formValues.name !== selectedStuff.name) {
+                    const isNameExist = checkNameExist(formValues.name);
+                    if (!isNameExist) onUpdate(payload);
+                } else {
+                    onUpdate(payload);
+                }
             }
-            closeForm();
         }
     };
 
