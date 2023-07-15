@@ -24,10 +24,12 @@ const ItemCard = ({ item }) => {
                 <img src={item.image} alt={item.name} className="w-32 h-32" />
                 <div>
                     <h5 className="mb-4 text-xl font-medium">{item.name}</h5>
-                    <div className="flex flex-col gap-1 text-sm">
-                        <p>Buy Price: {priceFormat(item.buyPrice)}</p>
-                        <p>Sell Price: {priceFormat(item.sellPrice)}</p>
-                        <p>Stock: {item.stock}</p>
+                    <div className="flex flex-col text-sm">
+                        <p>
+                            Buy Price: <span className="font-medium text-base text-green-600">{priceFormat(item.buyPrice)}</span>
+                        </p>
+                        <p>Sell Price: <span className="font-medium text-base text-blue-800">{priceFormat(item.sellPrice)}</span></p>
+                        <p>Stock: <span className="font-medium text-base text-yellow-600">{item.stock}</span></p>
                     </div>
                 </div>
             </div>
