@@ -8,6 +8,11 @@ import { MODAL_ID } from "../utils/enum";
 const ItemCard = ({ item }) => {
     const dispatch = useDispatch();
 
+    const onEdit = () => {
+        dispatch(setSelected(item));
+        dispatch(showModal(MODAL_ID.FORM));
+    };
+
     const onDelete = () => {
         dispatch(setSelected(item));
         dispatch(showModal(MODAL_ID.DELETE_CONFIRM));
@@ -29,6 +34,7 @@ const ItemCard = ({ item }) => {
             <div className="flex items-center gap-2">
                 <Button
                     icon={<i className="fa fa-pencil" aria-hidden="true"></i>}
+                    onClick={onEdit}
                 />
                 <Button
                     icon={<i className="fa fa-trash" aria-hidden="true"></i>}

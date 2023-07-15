@@ -11,7 +11,7 @@ const App = () => {
         <div className="container h-screen py-4 flex flex-col gap-4">
             <PageHeader />
             <ItemList />
-            {modalId === MODAL_ID.ADD_FORM && <StuffForm />}
+            {modalId === MODAL_ID.FORM && <StuffForm />}
             {modalId === MODAL_ID.DELETE_CONFIRM && <DeleteConfirm />}
             <ToastContainer />
         </div>

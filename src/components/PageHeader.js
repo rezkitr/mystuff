@@ -26,7 +26,7 @@ const PageHeader = () => {
                     icon={
                         <i className="fa fa-plus-square" aria-hidden="true"></i>
                     }
-                    onClick={() => dispatch(showModal(MODAL_ID.ADD_FORM))}
+                    onClick={() => dispatch(showModal(MODAL_ID.FORM))}
                 >
                     Add
                 </Button>

@@ -27,11 +27,20 @@ export const stuffSlice = createSlice({
             );
             state.data = newData;
         },
+        update: (state, action) => {
+            const newData = state.data.map((stuff) => {
+                if (stuff.id === action.payload.id) {
+                    return { ...stuff, ...action.payload };
+                }
+                return stuff;
+            });
+            state.data = newData;
+        },
         setSelected: (state, action) => {
             state.selectedStuff = action.payload;
         },
     },
 });
 
-export const { add, remove, setSelected } = stuffSlice.actions;
+export const { add, remove, update, setSelected } = stuffSlice.actions;
 export default stuffSlice.reducer;

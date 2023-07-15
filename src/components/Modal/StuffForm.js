@@ -1,15 +1,17 @@
-import Layout from "./Layout";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { v4 as uuidV4 } from "uuid";
 import { toast } from "react-toastify";
-import { add } from "../../redux/slices/stuffSlice";
+import { add, setSelected, update } from "../../redux/slices/stuffSlice";
 import { closeModal } from "../../redux/slices/modalSlice";
+import Layout from "./Layout";
 
 const StuffForm = () => {
     const stuffs = useSelector((state) => state.stuff.data);
+    const selectedStuff = useSelector((state) => state.stuff.selectedStuff);
     const dispatch = useDispatch();
 
     const schema = yup.object({
@@ -17,7 +19,7 @@ const StuffForm = () => {
             .mixed()
             .required("Required!")
             .test("fileSize", "Max size 100KB!", (value) => {
-                return value[0] && value[0].size <= 100000;
+                return value.length === 1 && value[0].size <= 100000;
             }),
         name: yup.string().required("Required!"),
         buyPrice: yup
@@ -36,6 +38,7 @@ const StuffForm = () => {
 
     const {
         register,
+        setValue,
         getValues,
         trigger,
         watch,
@@ -46,52 +49,96 @@ const StuffForm = () => {
         mode: "all",
     });
 
-    const watchImage = watch("image", undefined);
+    useEffect(() => {
+        if (selectedStuff) {
+            Object.entries(selectedStuff).forEach(([name, value]) =>
+                setValue(name, value)
+            );
+            setValue("image", "");
+        }
+    }, [selectedStuff]);
+
+    const watchImage = watch("image", "");
 
     const closeForm = () => {
         reset();
         dispatch(closeModal());
+        if (selectedStuff) dispatch(setSelected(null));
     };
 
-    const onAdd = async () => {
-        const isValid = await trigger();
+    const checkNameExist = (name) => {
+        const isNameExist = stuffs.find(
+            (stuff) => stuff.name.toLowerCase() === name.toLocaleLowerCase()
+        );
+
+        return isNameExist;
+    };
+
+    const onSubmit = async () => {
+        const isValid = !selectedStuff
+            ? await trigger()
+            : await trigger(["name", "buyPrice", "sellPrice", "stock"]);
+
         if (isValid) {
             const formValues = getValues();
-            const isNameExist = stuffs.find(
-                (stuff) =>
-                    stuff.name.toLowerCase() ===
-                    formValues.name.toLocaleLowerCase()
-            );
-            if (!isNameExist) {
+            if (!selectedStuff) {
+                const isNameExist = checkNameExist(formValues.name);
+                if (!isNameExist) {
+                    dispatch(
+                        add({
+                            ...formValues,
+                            id: uuidV4(),
+                            image: URL.createObjectURL(formValues.image[0]),
+                        })
+                    );
+                    toast("Stuff added successfully", {
+                        autoClose: 2000,
+                        type: "success",
+                    });
+                } else {
+                    toast("Product name already exist", {
+                        autoClose: 2000,
+                        type: "warning",
+                    });
+                }
+            } else {
                 dispatch(
-                    add({
+                    update({
                         ...formValues,
-                        image: URL.createObjectURL(formValues.image[0]),
-                        id: uuidV4(),
+                        id: selectedStuff.id,
+                        image:
+                            formValues.image !== ""
+                                ? URL.createObjectURL(formValues.image[0])
+                                : selectedStuff.image,
                     })
                 );
-                closeForm();
-                toast("Stuff added successfully", {
+                toast("Stuff updated successfully", {
                     autoClose: 2000,
                     type: "success",
                 });
-            } else {
-                toast("Product name already exist", {
-                    autoClose: 2000,
-                    type: "warning",
-                });
             }
+            closeForm();
         }
     };
 
     return (
-        <Layout title="Add Stuff" onClose={closeForm} onSubmit={onAdd}>
+        <Layout
+            title={`${selectedStuff ? "Edit" : "Add"} Stuff`}
+            confirmText={selectedStuff ? "Save" : "Add"}
+            onClose={closeForm}
+            onSubmit={onSubmit}
+        >
             <form>
                 <div className="flex flex-col gap-2">
-                    {watchImage && watchImage[0] && (
+                    {((watchImage && watchImage.length === 1) ||
+                        selectedStuff) && (
                         <div className="mb-2">
                             <img
-                                src={URL.createObjectURL(watchImage[0])}
+                                src={
+                                    selectedStuff && watchImage.length === 0
+                                        ? selectedStuff.image
+                                        : URL.createObjectURL(watchImage[0])
+                                }
                                 alt="preview"
                                 className="h-40 w-96"
                             />
