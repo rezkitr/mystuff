@@ -29,7 +29,7 @@ const ItemCard = ({ item }) => {
                             Buy Price: <span className="font-medium text-base text-green-600">{priceFormat(item.buyPrice)}</span>
                         </p>
                         <p>Sell Price: <span className="font-medium text-base text-blue-800">{priceFormat(item.sellPrice)}</span></p>
-                        <p>Stock: <span className="font-medium text-base text-yellow-600">{item.stock}</span></p>
+                        <p>Stock: <span className="font-medium text-base text-yellow-500">{item.stock}</span></p>
                     </div>
                 </div>
             </div>
